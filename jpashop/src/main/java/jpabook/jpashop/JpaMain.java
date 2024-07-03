@@ -6,6 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderItem;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -17,9 +18,9 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Order order1 = em.find(Order.class, 1L);
-
-            Member member1 = em.find(Member.class, order1.getMemberId());
+            // 연관관계 매핑 사용 예제
+            Order order = new Order();
+            order.addOrderItem(new OrderItem());
 
             tx.commit();
         } catch (Exception e) {
