@@ -7,7 +7,7 @@ import java.util.List;
 
 // 자세한 제약조건 등을 적을지 말지는 선택. 그러나 DB를 왔다갔다 하지 않아도 된다는 면에서, 적는 게 좋은 듯?
 @Entity
-public class Member {
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue // strategy 기본값 = auto
     @Column(name = "MEMBER_ID") // 형식은 회사 룰마다 다르다.
