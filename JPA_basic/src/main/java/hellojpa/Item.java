@@ -3,10 +3,10 @@ package hellojpa;
 import jakarta.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // 기본값 : 싱글 테이블
-@DiscriminatorColumn // 하위 테이블 타입을 구분하는 컬럼이 추가되고, 기본 값들은 엔티티명이 된다.(JPA 구현체마다 다르다.)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // 기본값 : 싱글 테이블
+@DiscriminatorColumn // 하위 테이블 타입을 구분하는 컬럼이 추가되고, 기본 값들은 엔티티명이 된다.(JPA 구현체마다 다르다.) / 단일 테이블 전략에선 없어도 생긴다.
 //@DiscriminatorColumn(name = "DIS_TYPE") // 컬럼명 변경도 가능하다.
-public class Item {
+public abstract class Item {
 
     @Id
     @GeneratedValue

@@ -2,6 +2,7 @@ package hellojpa;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class JpaMain {
@@ -27,8 +28,26 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            Movie findMovie = em.find(Movie.class, movie.getId());
-            System.out.println("findMovie = " + findMovie);
+//            Movie findMovie = em.find(Movie.class, movie.getId());
+//            System.out.println("findMovie = " + findMovie);
+
+//            /*
+//            상속 관계에 있는 엔티티들을 별개의 테이블 전략으로 구현하면, (부모 타입으로)조회를 했을 때 union all 한 후 찾는다.(비효율적이다.)
+//             */
+//            Item item = em.find(Item.class, movie.getId());
+//            System.out.println("item = " + item);
+
+            /*
+             @MappedSuperClass
+             */
+            Member member = new Member();
+            member.setCreatedBy("kang");
+            member.setCreatedDate(LocalDateTime.now());
+
+            em.persist(member);
+
+            em.flush();
+            em.clear();
 
             tx.commit();
         } catch (Exception e) {

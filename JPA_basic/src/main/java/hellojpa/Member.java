@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Member {
+public class Member extends BaseEntity { // 참고) 엔티티는, @Entity 나 @MappedSuperClass 가 붙은 클래스만 상속 가능하다.
 
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
