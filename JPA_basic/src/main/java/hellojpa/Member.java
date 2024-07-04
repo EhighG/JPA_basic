@@ -19,8 +19,14 @@ public class Member extends BaseEntity { // 참고) 엔티티는, @Entity 나 @M
     @Column(name = "USERNAME")
     private String username;
 
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
+    /* 지연 로딩이면, 둘 다 사용할 땐 쿼리가 2번 나가므로, 상황에 맞게 선택해야 한다.
+    그러나, 실무에서는 지연 로딩만 사용하는 게 강력하게 권장된다! 이유는,
+    1. 예상하지 못한 쿼리가 발생한다. (join으로 인한)
+    2. 즉시 로딩은, JPQL에서 "N+1 문제"를 일으킨다.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn
     private Team team;
 
     public Long getId() {
