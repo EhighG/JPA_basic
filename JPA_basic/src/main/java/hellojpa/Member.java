@@ -23,13 +23,6 @@ public class Member extends BaseEntity { // 참고) 엔티티는, @Entity 나 @M
     @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
     private Team team;
 
-    @OneToOne
-    @JoinColumn(name = "LOCKER_ID")
-    private Locker locker;
-
-    @OneToMany(mappedBy = "member")
-    private List<MemberProduct> memberProducts = new ArrayList<>();
-
     public Long getId() {
         return id;
     }
@@ -52,14 +45,6 @@ public class Member extends BaseEntity { // 참고) 엔티티는, @Entity 나 @M
 
     public void setTeam(Team team) {
         this.team = team;
-    }
-
-    public Locker getLocker() {
-        return locker;
-    }
-
-    public void setLocker(Locker locker) {
-        this.locker = locker;
     }
 
     // JPA는 프록시 및 리플렉션을 사용하므로, 기본 생성자가 필요하다.
