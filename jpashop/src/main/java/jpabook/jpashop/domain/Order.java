@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "ORDERS") // order가 예약어인 DB가 있어서, 보통 얘만 ORDERS로 많이 쓴다.
 public class Order extends BaseEntity {
@@ -14,15 +17,15 @@ public class Order extends BaseEntity {
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY, cascade = ALL) // order 변경 시 delivery도 같이 변경 / 둘의 라이프사이클을 잘 고려해서 의사결정
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate; // Springboot에선, 이름 관례를 직접 설정할 수 있다. 기본값은 Camel -> Snake
