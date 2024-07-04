@@ -17,51 +17,35 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Child child1 = new Child();
+            Child child2 = new Child();
 
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            member1.setTeam(team);
-            em.persist(member1);
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
 
-            em.flush();
-            em.clear();
+//            // 영속성 전이가 없을 때
+//            em.persist(parent);
+//            em.persist(child1);
+//            em.persist(child2);
 
-//            Member m = em.find(Member.class, member1.getId()); // TEAM과 조인하지 않은 select쿼리가 실행됨
-//            System.out.println("m.getTeam().getClass() = " + m.getTeam().getClass()); // proxy
+//            // 영속성 전이
+//            em.persist(parent);
 //
-//            System.out.println("=================");
-//            System.out.println("m.getTeam().getName() = " + m.getTeam().getName()); // TEAM select 쿼리 실행
-//            System.out.println("=================");
+//            // 고아 객체 처리
+//            em.flush();
+//            em.clear();
+//
+//            Parent findParent = em.find(Parent.class, parent.getId());
+//            findParent.getChildList().remove(0); // orphanRemoval 동작(delete 쿼리 날아감)
 
-            // 즉시 로딩과 N+1 문제
-            Team team2 = new Team();
-            team2.setName("teamB");
-            em.persist(team2);
+            // orphanRemoval; 부모 엔티티 삭제시, 자식 엔티티까지 삭제된다. (CascadeType.REMOVE처럼 동작)
+            em.persist(parent);
+            em.persist(child1);
+            em.persist(child2);
 
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.setTeam(team2);
-            em.persist(member2);
-
-            em.flush();
-            em.clear();
-
-            /*
-            N+1 문제란?
-            자동적으로 쿼리해 주는 em.find()와 달리, JPQL을 쓸 땐 그게 그대로 SQL로 번역되어 날려진다.
-            즉, 아래의 쿼리를 실행하면 Member 정보와, Team ID만을 가져온다는 말.
-            그런데 Member 엔티티의 Team은 즉시 로딩으로 설정되어 있으므로, 해당 설정에 맞춰주기 위해
-            하나하나 그 FK로 Team을 조회하는 쿼리를 날린다.(Team 정보가 N개면, N번)
-            따라서 총 N+1번의 쿼리를 날린다. 즉,
-            select * from Member; * 1
-            select * from Team where TEAM_ID = xx; * N
-             */
-            List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
-                    .getResultList();
-
+            Parent findParent = em.find(Parent.class, parent.getId());
+            em.remove(findParent); // child 1, 2까지 삭제됨
 
             tx.commit();
         } catch (Exception e) {
