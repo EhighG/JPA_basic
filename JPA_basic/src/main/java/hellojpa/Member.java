@@ -19,15 +19,23 @@ public class Member extends BaseEntity { // 참고) 엔티티는, @Entity 나 @M
     @Column(name = "USERNAME")
     private String username;
 
-    /* 지연 로딩이면, 둘 다 사용할 땐 쿼리가 2번 나가므로, 상황에 맞게 선택해야 한다.
-    그러나, 실무에서는 지연 로딩만 사용하는 게 강력하게 권장된다! 이유는,
-    1. 예상하지 못한 쿼리가 발생한다. (join으로 인한)
-    2. 즉시 로딩은, JPQL에서 "N+1 문제"를 일으킨다.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn
-    private Team team;
+    @Embedded // @Embeddable과 둘 중 하나만 쓰면 됨
+    private Period workPeriod;
+
+    @Embedded
+    private Address homeAddress;
+
+    // 한 엔티티에서 같은 값 타입을 사용하고, 컬럼 명이 중복된다면?
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "city",
+                    column = @Column(name = "WORK_CITY")),
+            @AttributeOverride(name = "street",
+                    column = @Column(name = "WORK_STREET")),
+            @AttributeOverride(name = "zipcode",
+                    column = @Column(name = "WORK_ZIPCODE"))
+    })
+    private Address workAddress;
 
     public Long getId() {
         return id;
@@ -45,14 +53,19 @@ public class Member extends BaseEntity { // 참고) 엔티티는, @Entity 나 @M
         this.username = username;
     }
 
-    public Team getTeam() {
-        return team;
+    public Period getWorkPeriod() {
+        return workPeriod;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
     }
 
-    // JPA는 프록시 및 리플렉션을 사용하므로, 기본 생성자가 필요하다.
-    public Member() {}
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
 }
